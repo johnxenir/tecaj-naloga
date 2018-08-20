@@ -73,14 +73,14 @@ public class PaketOkno extends JFrame {
 		panel.add(lblSteviloArtiklov);
 		
 		JComboBox modelComboBox = new JComboBox();
-		modelComboBox.setBounds(166, 8, 28, 20);
+		modelComboBox.setBounds(124, 8, 70, 20);
 		panel.add(modelComboBox);
 		modelComboBox.setModel(new DefaultComboBoxModel<ItemPair>(baza.izberiModele()));
 		
 		JComboBox velikostComboBox = new JComboBox();
-		velikostComboBox.setBounds(166, 33, 28, 20);
+		velikostComboBox.setBounds(124, 33, 70, 20);
 		panel.add(velikostComboBox);
-		modelComboBox.setModel(new DefaultComboBoxModel<ItemPair>(baza.izberiVelikosti()));
+		velikostComboBox.setModel(new DefaultComboBoxModel<ItemPair>(baza.izberiVelikosti()));
 		
 		JTextArea nazivTextArea = new JTextArea();
 		nazivTextArea.setFont(new Font("Monospaced", Font.PLAIN, 11));

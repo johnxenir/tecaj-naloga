@@ -54,6 +54,16 @@ public class GlavnoOkno extends JFrame {
 		JMenu mnDatoteka = new JMenu("Datoteka");
 		menuBar.add(mnDatoteka);
 		
+		JMenuItem mntmUstvariBazo = new JMenuItem("Ustvari Bazo");
+		mnDatoteka.add(mntmUstvariBazo);
+		mntmUstvariBazo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Baza baza = new Baza();
+				baza.kreirajBazo();
+			}			
+		});
+		
 		JMenuItem mntmZapri = new JMenuItem("Zapri");
 		mnDatoteka.add(mntmZapri);
 		mntmZapri.addActionListener(new ActionListener() {

@@ -66,12 +66,12 @@ public class PotnikOkno extends JFrame {
 		panel.add(lblKolicina);
 		
 		JComboBox potnikComboBox = new JComboBox();
-		potnikComboBox.setBounds(166, 8, 28, 20);
+		potnikComboBox.setBounds(124, 8, 70, 20);
 		panel.add(potnikComboBox);
 		potnikComboBox.setModel(new DefaultComboBoxModel<ItemPair>(baza.izberiPotnike()));
 		
 		JComboBox paketComboBox = new JComboBox();
-		paketComboBox.setBounds(166, 33, 28, 20);
+		paketComboBox.setBounds(124, 33, 70, 20);
 		panel.add(paketComboBox);
 		paketComboBox.setModel(new DefaultComboBoxModel<ItemPair>(baza.izberiPakete()));
 		

@@ -64,7 +64,7 @@ public class ArtikelOkno extends JFrame {
 		Baza baza = new Baza();
 		
 		JComboBox modelComboBox = new JComboBox();
-		modelComboBox.setBounds(149, 7, 31, 20);
+		modelComboBox.setBounds(110, 7, 70, 20);
 		modelComboBox.setModel(new DefaultComboBoxModel<ItemPair>(baza.izberiModele()));
 		
 		JSpinner kolicinaSpinner = new JSpinner();
@@ -79,9 +79,9 @@ public class ArtikelOkno extends JFrame {
 		panel.add(lblModel);
 		
 		JComboBox velikostComboBox = new JComboBox();
-		velikostComboBox.setBounds(149, 38, 28, 20);
+		velikostComboBox.setBounds(110, 38, 70, 20);
 		panel.add(velikostComboBox);
-		modelComboBox.setModel(new DefaultComboBoxModel<ItemPair>(baza.izberiVelikosti()));
+		velikostComboBox.setModel(new DefaultComboBoxModel<ItemPair>(baza.izberiVelikosti()));
 		
 		JLabel lblVelikost = new JLabel("Velikost");
 		lblVelikost.setBounds(10, 41, 46, 14);

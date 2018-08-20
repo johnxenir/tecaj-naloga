@@ -28,11 +28,11 @@ public class Baza
 	public Vector<ItemPair> izberiModele()
 	{
 		Vector<ItemPair> imenaModelov = new Vector<ItemPair>();
-		ResultSet rezultat = izberiIzBaze(String.format("SELECT id, ime FROM model"));
+		ResultSet rezultat = izberiIzBaze(String.format("SELECT id_model, ime FROM model"));
         try {
 			while (rezultat.next())
 			{
-				imenaModelov.add(new ItemPair(rezultat.getInt("id"), rezultat.getString("ime")));
+				imenaModelov.add(new ItemPair(rezultat.getInt("id_model"), rezultat.getString("ime")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -43,11 +43,11 @@ public class Baza
 	public Vector<ItemPair> izberiVelikosti()
 	{
 		Vector<ItemPair> imenaModelov = new Vector<ItemPair>();
-		ResultSet rezultat = izberiIzBaze(String.format("SELECT id, ime FROM model"));
+		ResultSet rezultat = izberiIzBaze(String.format("SELECT id_velikost, opis FROM velikost"));
         try {
 			while (rezultat.next())
 			{
-				imenaModelov.add(new ItemPair(rezultat.getInt("id"), rezultat.getString("ime")));
+				imenaModelov.add(new ItemPair(rezultat.getInt("id_velikost"), rezultat.getString("opis")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -58,11 +58,11 @@ public class Baza
 	public Vector<ItemPair> izberiPakete()
 	{
 		Vector<ItemPair> imenaModelov = new Vector<ItemPair>();
-		ResultSet rezultat = izberiIzBaze(String.format("SELECT id, naziv FROM paket"));
+		ResultSet rezultat = izberiIzBaze(String.format("SELECT id_paket, naziv FROM paket"));
         try {
 			while (rezultat.next())
 			{
-				imenaModelov.add(new ItemPair(rezultat.getInt("id"), rezultat.getString("naziv")));
+				imenaModelov.add(new ItemPair(rezultat.getInt("id_paket"), rezultat.getString("naziv")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -73,11 +73,11 @@ public class Baza
 	public Vector<ItemPair> izberiPotnike()
 	{
 		Vector<ItemPair> imenaModelov = new Vector<ItemPair>();
-		ResultSet rezultat = izberiIzBaze(String.format("SELECT id, ime FROM potnik"));
+		ResultSet rezultat = izberiIzBaze(String.format("SELECT id_potnik, ime FROM potnik"));
         try {
 			while (rezultat.next())
 			{
-				imenaModelov.add(new ItemPair(rezultat.getInt("id"), rezultat.getString("ime")));
+				imenaModelov.add(new ItemPair(rezultat.getInt("id_potnik"), rezultat.getString("ime")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -87,8 +87,8 @@ public class Baza
 	
 	public void dodajArtikel(int model, int velikost, int kolicina)
 	{
-		ResultSet rezultat = izberiIzBaze(String.format("SELECT id, kolicina "
-				+ "FROM nogavica "
+		ResultSet rezultat = izberiIzBaze(String.format("SELECT id_nogavice, kolicina "
+				+ "FROM nogavice "
 				+ "WHERE id_model = %d AND id_velikost = %d", model, velikost));
 		
 		try 
@@ -96,7 +96,7 @@ public class Baza
 			if (rezultat.next())
 			{
 				int k = rezultat.getInt("kolicina");
-				int id = rezultat.getInt("id");
+				int id = rezultat.getInt("id_nogavice");
 				dodajOdstraniArtikle(id, k, kolicina);
 			}
 			else
@@ -113,8 +113,8 @@ public class Baza
 	
 	public void dodajPaket(int model, int velikost, String naziv, int stevilo, int kolicina)
 	{
-		ResultSet rezultat = izberiIzBaze(String.format("SELECT id, kolicina "
-				+ "FROM nogavica "
+		ResultSet rezultat = izberiIzBaze(String.format("SELECT id_nogavice, kolicina "
+				+ "FROM nogavice "
 				+ "WHERE id_model = %d AND id_velikost = %d", model, velikost));
 		
 		try 
@@ -122,27 +122,28 @@ public class Baza
 			if (rezultat.next())
 			{
 				int k = rezultat.getInt("kolicina");
-				int id = rezultat.getInt("id");
-				if (k < kolicina)
+				int id = rezultat.getInt("id_nogavice");
+				if (k < kolicina * stevilo)
 				{
 					System.out.print("ni dovolj zaloge");
 					return;
 				}
 				
-				ResultSet rezultat1 = izberiIzBaze(String.format("SELECT id, kolicina "
+				ResultSet rezultat1 = izberiIzBaze(String.format("SELECT id_paket, kolicina "
 						+ "FROM paket "
 						+ "WHERE id_nogavice = %d", id));
 				
 				if (rezultat1.next())
 				{
 					int k1 = rezultat1.getInt("kolicina");
-					int id1 = rezultat.getInt("id");
+					int id1 = rezultat.getInt("id_paket");
 					dodajObstojecPaket(id1, k1, kolicina);
 				}
 				else
 				{
-					dodajOdstraniArtikle(id, k, -kolicina);
+					dodajNovPaket(naziv, stevilo, kolicina, id);
 				}
+				dodajOdstraniArtikle(id, k, - kolicina * stevilo);
 			}
 			else
 			{
@@ -160,8 +161,8 @@ public class Baza
 	public void dodajTovor(int potnik, int paket, int kolicina)
 	{
 		ResultSet rezultat = izberiIzBaze(String.format("SELECT kolicina "
-				+ "FROM paket "
-				+ "WHERE id = %d", paket));
+				+ "FROM id_paket "
+				+ "WHERE id_paket = %d", paket));
 		
 		try 
 		{
@@ -221,7 +222,7 @@ public class Baza
 	
 	public void dodajNovPaket(String naziv, int stevilo, int kolicina, int nogavice)
 	{
-		posodobiBazo(String.format("INSERT INTO paket (naziv, stevilo, kolicina, id_nogavice) VALUES (%d, %d, %d, %d);", naziv, stevilo, kolicina, nogavice));
+		posodobiBazo(String.format("INSERT INTO paket (naziv, stevilo, kolicina, id_nogavice) VALUES ('%s', %d, %d, %d);", naziv, stevilo, kolicina, nogavice));
 	}	
 	
 	public void dodajNovArtikel(int model, int velikost, int kolicina)
@@ -236,7 +237,7 @@ public class Baza
 			System.out.println("Ni dovolj zaloge!");
 			return;
 		}
-		posodobiBazo(String.format("UPDATE nogavice SET kolicina = %d WHERE id = %d", zaloga + dodano, id));		
+		posodobiBazo(String.format("UPDATE nogavice SET kolicina = %d WHERE id_nogavice = %d", zaloga + dodano, id));		
 	}
 	
 	public ResultSet izberiIzBaze(String sqlUkaz)
@@ -277,11 +278,11 @@ public class Baza
 			c = DriverManager.getConnection("jdbc:sqlite:nogavice.db");			
 			stmt = c.createStatement();
 			
+			
 			String sqlUkaz = "CREATE TABLE Nogavice (\r\n" + 
 					"	id_nogavice integer PRIMARY KEY AUTOINCREMENT,\r\n" + 
 					"	id_model integer,\r\n" + 
-					"	velikost_od integer,\r\n" + 
-					"	velikost_do integer,\r\n" + 
+					"	id_velikost integer,\r\n" + 
 					"	kolicina integer\r\n" + 
 					");\r\n" + 
 					"\r\n" + 
@@ -323,7 +324,15 @@ public class Baza
 					"	id_paket integer,\r\n" + 
 					"	kolicina integer\r\n" + 
 					");\r\n" + 
-					"\r\n";
+					"\r\n" + 
+					"CREATE TABLE Velikost (\r\n" + 
+					"	id_velikost integer PRIMARY KEY AUTOINCREMENT,\r\n" + 
+					"	od integer,\r\n" + 
+					"	do integer,\r\n" + 
+					"	opis string\r\n" + 
+					");\r\n" + 
+					"";
+			
 			stmt.executeUpdate(sqlUkaz);
 		}
 		catch (Exception e)
