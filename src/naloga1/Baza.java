@@ -7,6 +7,11 @@ import java.util.Vector;
 
 public class Baza 
 {
+	public static final int OK = 0;
+	public static final int DATABASE_ERROR = 1;
+	public static final int NO_MODEL = 2;
+	public static final int NO_PAKET = 3;
+	
 	private Connection c = null;
 	private Statement stmt = null;
 
@@ -153,7 +158,7 @@ public class Baza
 	}
 	
 	public void dodajTovor(int potnik, int paket, int kolicina)
-	{/*
+	{
 		ResultSet rezultat = izberiIzBaze(String.format("SELECT kolicina "
 				+ "FROM paket "
 				+ "WHERE id = %d", paket));
@@ -168,21 +173,27 @@ public class Baza
 					System.out.print("ni dovolj zaloge");
 					return;
 				}
-				dodajObstojecPaket(id, k, kolicina);
 				
-				dodajOdstraniPakete(id, k, kolicina);
+				dodajNovTovor(potnik, paket, kolicina);
+				
+				//dodajOdstraniPakete(id, k, kolicina);
 			}
 			else
 			{
-				dodajNovArtikel(model, velikost, kolicina);
+				System.out.println("Paket ne obstaja");
 			}
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/	
+		}
 	}
 	
+	private void dodajNovTovor(int potnik, int paket, int kolicina) 
+	{
+		posodobiBazo(String.format("INSERT INTO tovor (potnik, paket, kolicina) VALUES (%d, %d, %d);", potnik, paket, kolicina));
+	}
+
 	public void dodajPotnika(String ime)
 	{
 		posodobiBazo(String.format("INSERT INTO potnik (ime) VALUES (%s);", ime));
