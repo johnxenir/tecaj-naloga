@@ -83,7 +83,72 @@ public class Baza
 			e.printStackTrace();
 		}
 		return imenaModelov;
-	}	
+	}
+	
+	public Vector<String[]> pokaziArtikle()
+	{
+		Vector<String[]> artikli = new Vector<String[]>();
+		ResultSet rezultat = izberiIzBaze(String.format("SELECT m.ime, v.opis, n.kolicina "
+				+ "FROM model m, velikost v, nogavice n "
+				+ "WHERE n.id_model = m.id_model and n.id_velikost = v.id_velikost"));
+
+        try {
+			while (rezultat.next())
+			{
+				String ime = rezultat.getString("ime");
+				String opis = rezultat.getString("opis");
+				String kolicina = rezultat.getString("kolicina");
+				artikli.add(new String[] { ime, opis, kolicina });
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return artikli;
+	}
+	
+	public Vector<String[]> pokaziPakete()
+	{
+		Vector<String[]> artikli = new Vector<String[]>();
+		ResultSet rezultat = izberiIzBaze(String.format("SELECT p.naziv, p.stevilo, m.ime, v.opis, p.kolicina "
+				+ "FROM paket p, model m, velikost v, nogavice n "
+				+ "WHERE p.id_nogavice = n.id_nogavice and n.id_model = m.id_model and n.id_velikost = v.id_velikost"));
+
+        try {
+			while (rezultat.next())
+			{
+				String naziv = rezultat.getString("naziv");
+				String stevilo = rezultat.getString("stevilo");
+				String model = rezultat.getString("ime");
+				String velikost = rezultat.getString("opis");
+				String kolicina = rezultat.getString("kolicina");
+				artikli.add(new String[] { naziv, stevilo, model, velikost, kolicina });
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return artikli;
+	}
+	
+	public Vector<String[]> pokaziPotnike()
+	{
+		Vector<String[]> artikli = new Vector<String[]>();
+		ResultSet rezultat = izberiIzBaze(String.format("SELECT o.ime, p.naziv, t.kolicina "
+				+ "FROM potnik o, tovor t, paket p "
+				+ "WHERE p.id_paket = t.id_paket and o.id_potnik = t.id_potnik "));
+
+        try {
+			while (rezultat.next())
+			{
+				String ime = rezultat.getString("ime");
+				String naziv = rezultat.getString("naziv");
+				String kolicina = rezultat.getString("kolicina");
+				artikli.add(new String[] { ime, naziv, kolicina });
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return artikli;
+	}
 	
 	public void dodajArtikel(int model, int velikost, int kolicina)
 	{
@@ -97,7 +162,7 @@ public class Baza
 			{
 				int k = rezultat.getInt("kolicina");
 				int id = rezultat.getInt("id_nogavice");
-				dodajOdstraniArtikle(id, k, kolicina);
+				dodajObstojecArtikel(id, k, kolicina);
 			}
 			else
 			{
@@ -136,14 +201,14 @@ public class Baza
 				if (rezultat1.next())
 				{
 					int k1 = rezultat1.getInt("kolicina");
-					int id1 = rezultat.getInt("id_paket");
+					int id1 = rezultat1.getInt("id_paket");
 					dodajObstojecPaket(id1, k1, kolicina);
 				}
 				else
 				{
 					dodajNovPaket(naziv, stevilo, kolicina, id);
 				}
-				dodajOdstraniArtikle(id, k, - kolicina * stevilo);
+				dodajObstojecArtikel(id, k, - kolicina * stevilo);
 			}
 			else
 			{
@@ -161,7 +226,7 @@ public class Baza
 	public void dodajTovor(int potnik, int paket, int kolicina)
 	{
 		ResultSet rezultat = izberiIzBaze(String.format("SELECT kolicina "
-				+ "FROM id_paket "
+				+ "FROM paket "
 				+ "WHERE id_paket = %d", paket));
 		
 		try 
@@ -190,9 +255,11 @@ public class Baza
 		}
 	}
 	
+	
+	
 	private void dodajNovTovor(int potnik, int paket, int kolicina) 
 	{
-		posodobiBazo(String.format("INSERT INTO tovor (potnik, paket, kolicina) VALUES (%d, %d, %d);", potnik, paket, kolicina));
+		posodobiBazo(String.format("INSERT INTO tovor (id_potnik, id_paket, kolicina) VALUES (%d, %d, %d);", potnik, paket, kolicina));
 	}
 
 	public void dodajPotnika(String ime)
@@ -217,7 +284,7 @@ public class Baza
 			System.out.println("Ni dovolj zaloge!");
 			return;
 		}
-		posodobiBazo(String.format("UPDATE paket SET kolicina = %d WHERE id = %d", zaloga + dodano, id));		
+		posodobiBazo(String.format("UPDATE paket SET kolicina = %d WHERE id_paket = %d", zaloga + dodano, id));		
 	}
 	
 	public void dodajNovPaket(String naziv, int stevilo, int kolicina, int nogavice)
@@ -230,7 +297,7 @@ public class Baza
 		posodobiBazo(String.format("INSERT INTO nogavice (id_model, id_velikost, kolicina) VALUES (%d, %d, %d);", model, velikost, kolicina));
 	}
 	
-	public void dodajOdstraniArtikle(int id, int zaloga, int dodano)
+	public void dodajObstojecArtikel(int id, int zaloga, int dodano)
 	{
 		if (zaloga + dodano < 0)
 		{

@@ -17,7 +17,8 @@ import javax.swing.JButton;
 public class PotnikOkno extends JFrame {
 
 	private JPanel contentPane;
-
+	private GlavnoOkno parent;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -38,7 +39,7 @@ public class PotnikOkno extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public PotnikOkno() {
+	public PotnikOkno(GlavnoOkno go) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setTitle("Potnik");
 		setBounds(100, 100, 230, 180);
@@ -89,6 +90,8 @@ public class PotnikOkno extends JFrame {
 				int paket = ((ItemPair)paketComboBox.getSelectedItem()).getKey();
 				int kolicina = (int)kolicinaSpinner.getValue();
 				baza.dodajTovor(potnik, paket, kolicina);
+				
+				parent.napolniTabelo();
 			}			
 		});
 	}

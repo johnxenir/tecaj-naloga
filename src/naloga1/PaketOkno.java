@@ -20,6 +20,7 @@ import javax.swing.JButton;
 public class PaketOkno extends JFrame {
 
 	private JPanel contentPane;
+	private GlavnoOkno parent;
 
 	/**
 	 * Launch the application.
@@ -41,7 +42,7 @@ public class PaketOkno extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public PaketOkno() {
+	public PaketOkno(GlavnoOkno go) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setTitle("Paket");
 		setBounds(100, 100, 231, 230);
@@ -111,7 +112,11 @@ public class PaketOkno extends JFrame {
 				int stevilo = (int)steviloSpinner.getValue();
 				int kolicina = (int)kolicinaSpinner.getValue();
 				baza.dodajPaket(model, velikost, naziv, stevilo, kolicina);
+				
+				parent.napolniTabelo();
 			}			
 		});
+		
+		parent = go;
 	}
 }

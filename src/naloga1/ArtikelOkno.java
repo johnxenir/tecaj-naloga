@@ -49,7 +49,7 @@ public class ArtikelOkno extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ArtikelOkno() {
+	public ArtikelOkno(GlavnoOkno go) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setTitle("Artikel");
 		setBounds(100, 100, 230, 200);
@@ -100,9 +100,13 @@ public class ArtikelOkno extends JFrame {
 				int model = ((ItemPair)modelComboBox.getSelectedItem()).getKey();
 				int velikost = ((ItemPair)velikostComboBox.getSelectedItem()).getKey();
 				int kolicina = (int)kolicinaSpinner.getValue();
-				baza.dodajArtikel(model, velikost, kolicina);				
-			}			
+				baza.dodajArtikel(model, velikost, kolicina);
+				
+				parent.napolniTabelo();
+			}
 		});
+		
+		parent = go;
 	}
 	
 	public void nastaviGlavnoOkno(GlavnoOkno go)
