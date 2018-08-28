@@ -212,7 +212,6 @@ public class Baza
 			}
 			else
 			{
-				//dodajNovPaket(model, velikost, kolicina);
 				System.out.println("Model ne obstaja");
 			}
 			
@@ -225,7 +224,7 @@ public class Baza
 	
 	public void dodajTovor(int potnik, int paket, int kolicina)
 	{
-		ResultSet rezultat = izberiIzBaze(String.format("SELECT kolicina "
+		ResultSet rezultat = izberiIzBaze(String.format("SELECT id_paket, kolicina "
 				+ "FROM paket "
 				+ "WHERE id_paket = %d", paket));
 		
@@ -233,6 +232,7 @@ public class Baza
 		{
 			if (rezultat.next())
 			{
+				int id = rezultat.getInt("id_paket");
 				int k = rezultat.getInt("kolicina");
 				if (k < kolicina)
 				{
@@ -240,9 +240,22 @@ public class Baza
 					return;
 				}
 				
-				dodajNovTovor(potnik, paket, kolicina);
+				ResultSet rezultat1 = izberiIzBaze(String.format("SELECT id_tovor, kolicina "
+						+ "FROM tovor "
+						+ "WHERE id_paket = %d", id));
 				
-				//dodajOdstraniPakete(id, k, kolicina);
+				if (rezultat1.next())
+				{
+					int k1 = rezultat1.getInt("kolicina");
+					int id1 = rezultat1.getInt("id_tovor");
+					dodajObstojecTovor(id1, k1, kolicina);
+				}
+				else
+				{
+					dodajNovTovor(potnik, id, kolicina);					
+				}
+				
+				dodajObstojecPaket(id, k, - kolicina);
 			}
 			else
 			{
@@ -255,7 +268,15 @@ public class Baza
 		}
 	}
 	
-	
+	private void dodajObstojecTovor(int tovor, int zaloga, int dodano)
+	{
+		if (zaloga + dodano < 0)
+		{
+			System.out.println("Ni dovolj zaloge!");
+			return;
+		}
+		posodobiBazo(String.format("UPDATE tovor SET kolicina = %d WHERE id_tovor = %d", zaloga + dodano, tovor));
+	}
 	
 	private void dodajNovTovor(int potnik, int paket, int kolicina) 
 	{
@@ -266,7 +287,7 @@ public class Baza
 	{
 		posodobiBazo(String.format("INSERT INTO potnik (ime) VALUES (%s);", ime));
 	}
-	
+	/*
 	public void dodajNovModel(String ime, int barva, int vzorec)
 	{
 		posodobiBazo(String.format("INSERT INTO model (ime, id_barva, id_vzorec) VALUES (%s, %d, %d);", ime, barva, vzorec));
@@ -276,15 +297,15 @@ public class Baza
 	{
 		posodobiBazo(String.format("INSERT INTO nogavice (id_model, velikost_od, velikost_do, kolicina) VALUES (%d, %d, %d, %d);", model, v1, v2, 0));
 	}
-	
-	public void dodajObstojecPaket(int id, int zaloga, int dodano) throws Exception
+	*/
+	public void dodajObstojecPaket(int paket, int zaloga, int dodano) throws Exception
 	{
 		if (zaloga + dodano < 0)
 		{
 			System.out.println("Ni dovolj zaloge!");
 			return;
 		}
-		posodobiBazo(String.format("UPDATE paket SET kolicina = %d WHERE id_paket = %d", zaloga + dodano, id));		
+		posodobiBazo(String.format("UPDATE paket SET kolicina = %d WHERE id_paket = %d", zaloga + dodano, paket));		
 	}
 	
 	public void dodajNovPaket(String naziv, int stevilo, int kolicina, int nogavice)

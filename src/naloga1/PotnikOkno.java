@@ -94,6 +94,8 @@ public class PotnikOkno extends JFrame {
 				parent.napolniTabelo();
 			}			
 		});
+		
+		parent = go;
 	}
 
 }
