@@ -1,4 +1,5 @@
 package naloga1;
+import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,7 +177,7 @@ public class Baza
 
 	}
 	
-	public void dodajPaket(int model, int velikost, String naziv, int stevilo, int kolicina)
+	public int dodajPaket(int model, int velikost, String naziv, int stevilo, int kolicina)
 	{
 		ResultSet rezultat = izberiIzBaze(String.format("SELECT id_nogavice, kolicina "
 				+ "FROM nogavice "
@@ -191,7 +192,7 @@ public class Baza
 				if (k < kolicina * stevilo)
 				{
 					System.out.print("ni dovolj zaloge");
-					return;
+					return 1;
 				}
 				
 				ResultSet rezultat1 = izberiIzBaze(String.format("SELECT id_paket, kolicina "
@@ -213,16 +214,17 @@ public class Baza
 			else
 			{
 				System.out.println("Model ne obstaja");
+				return 2;
 			}
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		return 0;
 	}
 	
-	public void dodajTovor(int potnik, int paket, int kolicina)
+	public int dodajTovor(int potnik, int paket, int kolicina)
 	{
 		ResultSet rezultat = izberiIzBaze(String.format("SELECT id_paket, kolicina "
 				+ "FROM paket "
@@ -237,7 +239,7 @@ public class Baza
 				if (k < kolicina)
 				{
 					System.out.print("ni dovolj zaloge");
-					return;
+					return 1;
 				}
 				
 				ResultSet rezultat1 = izberiIzBaze(String.format("SELECT id_tovor, kolicina "
@@ -260,12 +262,14 @@ public class Baza
 			else
 			{
 				System.out.println("Paket ne obstaja");
+				return 2;
 			}
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return 0;
 	}
 	
 	private void dodajObstojecTovor(int tovor, int zaloga, int dodano)
@@ -298,14 +302,15 @@ public class Baza
 		posodobiBazo(String.format("INSERT INTO nogavice (id_model, velikost_od, velikost_do, kolicina) VALUES (%d, %d, %d, %d);", model, v1, v2, 0));
 	}
 	*/
-	public void dodajObstojecPaket(int paket, int zaloga, int dodano) throws Exception
+	public int dodajObstojecPaket(int paket, int zaloga, int dodano)
 	{
 		if (zaloga + dodano < 0)
 		{
 			System.out.println("Ni dovolj zaloge!");
-			return;
+			return 1;
 		}
-		posodobiBazo(String.format("UPDATE paket SET kolicina = %d WHERE id_paket = %d", zaloga + dodano, paket));		
+		posodobiBazo(String.format("UPDATE paket SET kolicina = %d WHERE id_paket = %d", zaloga + dodano, paket));
+		return 0;
 	}
 	
 	public void dodajNovPaket(String naziv, int stevilo, int kolicina, int nogavice)
@@ -318,14 +323,15 @@ public class Baza
 		posodobiBazo(String.format("INSERT INTO nogavice (id_model, id_velikost, kolicina) VALUES (%d, %d, %d);", model, velikost, kolicina));
 	}
 	
-	public void dodajObstojecArtikel(int id, int zaloga, int dodano)
+	public int dodajObstojecArtikel(int id, int zaloga, int dodano)
 	{
 		if (zaloga + dodano < 0)
 		{
 			System.out.println("Ni dovolj zaloge!");
-			return;
+			return 1;
 		}
-		posodobiBazo(String.format("UPDATE nogavice SET kolicina = %d WHERE id_nogavice = %d", zaloga + dodano, id));		
+		posodobiBazo(String.format("UPDATE nogavice SET kolicina = %d WHERE id_nogavice = %d", zaloga + dodano, id));
+		return 0;
 	}
 	
 	public ResultSet izberiIzBaze(String sqlUkaz)
@@ -358,14 +364,27 @@ public class Baza
 		}	
 	}
 	
-	public void kreirajBazo()
+	public void zapri()
+	{
+		try {
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public int kreirajBazo()
 	{
 		try
 		{
-			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:nogavice.db");			
-			stmt = c.createStatement();
+			File f = new File("nogavice.db");
+			if (f.exists())
+			{
+				return 1;
+			}
 			
+			stmt = c.createStatement();			
 			
 			String sqlUkaz = "CREATE TABLE Nogavice (\r\n" + 
 					"	id_nogavice integer PRIMARY KEY AUTOINCREMENT,\r\n" + 
@@ -428,6 +447,7 @@ public class Baza
 			System.err.println(e);
 			System.exit(0);
 		}
+		return 0;
 		
 	}
 

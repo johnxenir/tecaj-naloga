@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import java.awt.Font;
@@ -111,8 +112,12 @@ public class PaketOkno extends JFrame {
 				String naziv = nazivTextArea.getText();
 				int stevilo = (int)steviloSpinner.getValue();
 				int kolicina = (int)kolicinaSpinner.getValue();
-				baza.dodajPaket(model, velikost, naziv, stevilo, kolicina);
-				
+				int result = baza.dodajPaket(model, velikost, naziv, stevilo, kolicina);
+				if (result == 1)
+				{
+					JOptionPane.showMessageDialog(null, "Ni dovolj zaloge artiklov", "Napaka", JOptionPane.ERROR_MESSAGE);
+				}
+				baza.zapri();
 				parent.napolniTabelo();
 			}			
 		});

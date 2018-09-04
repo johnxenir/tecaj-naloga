@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -12,12 +13,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JButton;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class GlavnoOkno extends JFrame {
 
@@ -56,23 +60,13 @@ public class GlavnoOkno extends JFrame {
 	public GlavnoOkno() {
 		setTitle("Aplikacija");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 618, 581);
+		setBounds(100, 100, 650, 581);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
 		JMenu mnDatoteka = new JMenu("Datoteka");
 		menuBar.add(mnDatoteka);
-		
-		JMenuItem mntmUstvariBazo = new JMenuItem("Ustvari Bazo");
-		mnDatoteka.add(mntmUstvariBazo);
-		mntmUstvariBazo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Baza baza = new Baza();
-				baza.kreirajBazo();
-			}			
-		});
 		
 		JMenuItem mntmZapri = new JMenuItem("Zapri");
 		mnDatoteka.add(mntmZapri);
@@ -94,7 +88,6 @@ public class GlavnoOkno extends JFrame {
 				try {
 					ArtikelOkno frame = new ArtikelOkno(glavnoOkno);
 					frame.setVisible(true);
-					//frame.nastaviGlavnoOkno(glavnoOkno);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}				
@@ -141,20 +134,38 @@ public class GlavnoOkno extends JFrame {
 		tabbedPane.addTab("Artikli", null, artikelPanel, null);
 		
 		JScrollPane scrollPane = new JScrollPane();
+		
+		JButton btnDodajArtikle = new JButton("Dodaj ...");
+		btnDodajArtikle.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					ArtikelOkno frame = new ArtikelOkno(glavnoOkno);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}	
+			}
+		});
 		GroupLayout gl_artikelPanel = new GroupLayout(artikelPanel);
 		gl_artikelPanel.setHorizontalGroup(
 			gl_artikelPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_artikelPanel.createSequentialGroup()
 					.addGap(36)
 					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 369, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(431, Short.MAX_VALUE))
+					.addGap(38)
+					.addComponent(btnDodajArtikle)
+					.addContainerGap(61, Short.MAX_VALUE))
 		);
 		gl_artikelPanel.setVerticalGroup(
-			gl_artikelPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_artikelPanel.createSequentialGroup()
-					.addContainerGap(38, Short.MAX_VALUE)
+			gl_artikelPanel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_artikelPanel.createSequentialGroup()
+					.addContainerGap(23, Short.MAX_VALUE)
 					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 408, GroupLayout.PREFERRED_SIZE)
 					.addGap(37))
+				.addGroup(Alignment.LEADING, gl_artikelPanel.createSequentialGroup()
+					.addGap(35)
+					.addComponent(btnDodajArtikle)
+					.addContainerGap(408, Short.MAX_VALUE))
 		);
 		
 		artikliTable = new JTable();
@@ -173,20 +184,39 @@ public class GlavnoOkno extends JFrame {
 		tabbedPane.addTab("Paketi", null, paketPanel, null);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
+		
+		JButton btnDodajPaket = new JButton("Dodaj ...");
+		btnDodajPaket.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					PaketOkno frame = new PaketOkno(glavnoOkno);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}	
+			}
+		});
 		GroupLayout gl_paketPanel = new GroupLayout(paketPanel);
 		gl_paketPanel.setHorizontalGroup(
 			gl_paketPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_paketPanel.createSequentialGroup()
 					.addGap(48)
 					.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(336, Short.MAX_VALUE))
+					.addGap(18)
+					.addComponent(btnDodajPaket, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(18, Short.MAX_VALUE))
 		);
 		gl_paketPanel.setVerticalGroup(
 			gl_paketPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_paketPanel.createSequentialGroup()
-					.addGap(41)
-					.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 388, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(54, Short.MAX_VALUE))
+					.addGroup(gl_paketPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_paketPanel.createSequentialGroup()
+							.addGap(41)
+							.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 388, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_paketPanel.createSequentialGroup()
+							.addGap(54)
+							.addComponent(btnDodajPaket)))
+					.addContainerGap(39, Short.MAX_VALUE))
 		);
 		
 		paketiTable = new JTable();
@@ -205,20 +235,39 @@ public class GlavnoOkno extends JFrame {
 		tabbedPane.addTab("Potniki", null, potnikPanel, null);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
+		
+		JButton btnDodajPotnika = new JButton("Dodaj ...");
+		btnDodajPaket.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					PotnikOkno frame = new PotnikOkno(glavnoOkno);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}	
+			}
+		});
 		GroupLayout gl_potnikPanel = new GroupLayout(potnikPanel);
 		gl_potnikPanel.setHorizontalGroup(
 			gl_potnikPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_potnikPanel.createSequentialGroup()
 					.addGap(45)
 					.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 416, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(375, Short.MAX_VALUE))
+					.addGap(31)
+					.addComponent(btnDodajPotnika, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(44, Short.MAX_VALUE))
 		);
 		gl_potnikPanel.setVerticalGroup(
 			gl_potnikPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_potnikPanel.createSequentialGroup()
-					.addGap(41)
-					.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 398, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(44, Short.MAX_VALUE))
+					.addGroup(gl_potnikPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_potnikPanel.createSequentialGroup()
+							.addGap(41)
+							.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 398, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_potnikPanel.createSequentialGroup()
+							.addGap(59)
+							.addComponent(btnDodajPotnika)))
+					.addContainerGap(29, Short.MAX_VALUE))
 		);
 		
 		potnikiTable = new JTable();
@@ -232,7 +281,20 @@ public class GlavnoOkno extends JFrame {
 		scrollPane_2.setViewportView(potnikiTable);
 		potnikPanel.setLayout(gl_potnikPanel);
 		
-		napolniTabelo();
+		File f = new File("nogavice.db");
+		if (f.exists())
+		{	
+			napolniTabelo();
+		}
+		else
+		{
+			Baza baza = new Baza();
+			int rezultat = baza.kreirajBazo();
+			if (rezultat == 1)
+			{
+				JOptionPane.showMessageDialog(null, "Baza je že ustvarjena", "Napaka", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 	
 	public void napolniTabelo()

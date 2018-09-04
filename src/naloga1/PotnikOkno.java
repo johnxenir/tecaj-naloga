@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 import javax.swing.DefaultComboBoxModel;
@@ -89,8 +90,11 @@ public class PotnikOkno extends JFrame {
 				int potnik = ((ItemPair)potnikComboBox.getSelectedItem()).getKey();
 				int paket = ((ItemPair)paketComboBox.getSelectedItem()).getKey();
 				int kolicina = (int)kolicinaSpinner.getValue();
-				baza.dodajTovor(potnik, paket, kolicina);
-				
+				int result = baza.dodajTovor(potnik, paket, kolicina);
+				if (result == 1)
+				{
+					JOptionPane.showMessageDialog(null, "Ni dovolj zaloge paketov", "Napaka", JOptionPane.ERROR_MESSAGE);
+				}
 				parent.napolniTabelo();
 			}			
 		});

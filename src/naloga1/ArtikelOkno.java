@@ -101,7 +101,7 @@ public class ArtikelOkno extends JFrame {
 				int velikost = ((ItemPair)velikostComboBox.getSelectedItem()).getKey();
 				int kolicina = (int)kolicinaSpinner.getValue();
 				baza.dodajArtikel(model, velikost, kolicina);
-				
+				baza.zapri();
 				parent.napolniTabelo();
 			}
 		});
