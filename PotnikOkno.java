@@ -70,7 +70,7 @@ public class PotnikOkno extends JFrame {
 		panel.add(lblIme);
 		
 		imeTextField = new JTextField();
-		imeTextField.setBounds(74, 8, 120, 20);
+		imeTextField.setBounds(10, 36, 184, 20);
 		panel.add(imeTextField);
 		imeTextField.setColumns(10);
 		
@@ -86,6 +86,7 @@ public class PotnikOkno extends JFrame {
 				{
 					JOptionPane.showMessageDialog(null, "Ni dovolj zaloge paketov", "Napaka", JOptionPane.ERROR_MESSAGE);
 				}*/
+				baza.zapri();
 				parent.napolniTabelo();
 			}			
 		});		

@@ -105,6 +105,7 @@ public class TovorOkno extends JFrame {
 				{
 					JOptionPane.showMessageDialog(null, "Ni dovolj zaloge paketov", "Napaka", JOptionPane.ERROR_MESSAGE);
 				}
+				baza.zapri();
 				parent.napolniTabelo();
 			}			
 		});

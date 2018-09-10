@@ -76,8 +76,8 @@ public class PaketOkno extends JFrame {
 		lblVelikost.setBounds(10, 36, 46, 14);
 		panel.add(lblVelikost);
 		
-		JLabel lblSteviloArtiklov = new JLabel("Stevilo artiklov");
-		lblSteviloArtiklov.setBounds(10, 86, 70, 14);
+		JLabel lblSteviloArtiklov = new JLabel("\u0160t. artiklov v paketu");
+		lblSteviloArtiklov.setBounds(10, 86, 115, 14);
 		panel.add(lblSteviloArtiklov);
 		
 		JComboBox modelComboBox = new JComboBox();

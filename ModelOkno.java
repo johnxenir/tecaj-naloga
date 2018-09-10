@@ -65,12 +65,12 @@ public class ModelOkno extends JFrame {
 		
 		Baza baza = new Baza();
 		
-		JLabel lblIme = new JLabel("Naziv:");
-		lblIme.setBounds(10, 11, 46, 14);
+		JLabel lblIme = new JLabel("Ime modela:");
+		lblIme.setBounds(10, 11, 106, 14);
 		panel.add(lblIme);
 		
 		imeTextField = new JTextField();
-		imeTextField.setBounds(74, 8, 120, 20);
+		imeTextField.setBounds(10, 36, 184, 20);
 		panel.add(imeTextField);
 		imeTextField.setColumns(10);
 		
@@ -86,6 +86,7 @@ public class ModelOkno extends JFrame {
 				{
 					JOptionPane.showMessageDialog(null, "Ni dovolj zaloge paketov", "Napaka", JOptionPane.ERROR_MESSAGE);
 				}*/
+				baza.zapri();
 				parent.napolniTabelo();
 			}			
 		});		

@@ -199,6 +199,7 @@ public class GlavnoOkno extends JFrame {
 		);
 		
 		artikliTable = new JTable();
+		artikliTable.setEnabled(false);
 		artikliTable.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
@@ -247,6 +248,7 @@ public class GlavnoOkno extends JFrame {
 		);
 		
 		paketiTable = new JTable();
+		paketiTable.setEnabled(false);
 		paketiTable.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
@@ -295,6 +297,7 @@ public class GlavnoOkno extends JFrame {
 		);
 		
 		potnikiTable = new JTable();
+		potnikiTable.setEnabled(false);
 		potnikiTable.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
