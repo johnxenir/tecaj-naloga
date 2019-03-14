@@ -21,6 +21,7 @@ public class TovorOkno extends JFrame {
 
 	private JPanel contentPane;
 	private GlavnoOkno parent;
+	private TovorOkno trenutnoOkno;
 	
 	/**
 	 * Launch the application.
@@ -55,15 +56,16 @@ public class TovorOkno extends JFrame {
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
+		Baza baza = new Baza();
+		
 		addWindowListener(new WindowAdapter() 
 		{
-		  public void windowClosing(WindowEvent e)
-		  {
-		    parent.setEnabled(true);
-		  }
+			  public void windowClosing(WindowEvent e)
+			  {
+				  baza.zapri();
+				  parent.setEnabled(true);
+			  }
 		});
-		
-		Baza baza = new Baza();
 		
 		JLabel lblPotnik = new JLabel("Potnik");
 		lblPotnik.setBounds(10, 11, 46, 14);
@@ -101,15 +103,25 @@ public class TovorOkno extends JFrame {
 				int paket = ((ItemPair)paketComboBox.getSelectedItem()).getKey();
 				int kolicina = (int)kolicinaSpinner.getValue();
 				int result = baza.dodajTovor(potnik, paket, kolicina);
-				if (result == 1)
+				if (result == Baza.RESULT_NI_ZALOGE)
 				{
 					JOptionPane.showMessageDialog(null, "Ni dovolj zaloge paketov", "Napaka", JOptionPane.ERROR_MESSAGE);
 				}
-				baza.zapri();
-				parent.napolniTabelo();
+				else if (result == Baza.RESULT_NI_PAKETA)
+				{
+					JOptionPane.showMessageDialog(null, "Model ne obstaja", "Napaka", JOptionPane.ERROR_MESSAGE);
+				}
+				else
+				{
+					baza.zapri();
+					parent.napolniTabelo();
+					parent.setEnabled(true);
+					trenutnoOkno.dispose();
+				}
 			}			
 		});
 		
+		trenutnoOkno = this;
 		parent = go;
 	}
 

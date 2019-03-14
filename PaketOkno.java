@@ -24,7 +24,8 @@ public class PaketOkno extends JFrame {
 
 	private JPanel contentPane;
 	private GlavnoOkno parent;
-
+	private PaketOkno trenutnoOkno;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -58,15 +59,16 @@ public class PaketOkno extends JFrame {
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
+		Baza baza = new Baza();
+		
 		addWindowListener(new WindowAdapter() 
 		{
-		  public void windowClosing(WindowEvent e)
-		  {
-		    parent.setEnabled(true);
-		  }
+			  public void windowClosing(WindowEvent e)
+			  {
+				  baza.zapri();
+				  parent.setEnabled(true);
+			  }
 		});
-		
-		Baza baza = new Baza();
 		
 		JLabel lblModel = new JLabel("Model");
 		lblModel.setBounds(10, 11, 46, 14);
@@ -113,15 +115,25 @@ public class PaketOkno extends JFrame {
 				int stevilo = (int)steviloSpinner.getValue();
 				int kolicina = (int)kolicinaSpinner.getValue();
 				int result = baza.dodajPaket(model, velikost, stevilo, kolicina);
-				if (result == 1)
+				if (result == Baza.RESULT_NI_ZALOGE)
 				{
 					JOptionPane.showMessageDialog(null, "Ni dovolj zaloge artiklov", "Napaka", JOptionPane.ERROR_MESSAGE);
 				}
-				baza.zapri();
-				parent.napolniTabelo();
+				else if (result == Baza.RESULT_NI_MODELA)
+				{
+					JOptionPane.showMessageDialog(null, "Model ne obstaja", "Napaka", JOptionPane.ERROR_MESSAGE);
+				}
+				else
+				{
+					baza.zapri();
+					parent.napolniTabelo();
+					parent.setEnabled(true);
+					trenutnoOkno.dispose();
+				}
 			}			
 		});
 		
+		trenutnoOkno = this;
 		parent = go;
 	}
 }

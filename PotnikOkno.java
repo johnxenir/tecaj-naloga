@@ -14,13 +14,16 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 
 public class PotnikOkno extends JFrame {
 
 	private JPanel contentPane;
 	private GlavnoOkno parent;
 	private JTextField imeTextField;
+	private PotnikOkno trenutnoOkno;
 
 	/**
 	 * Launch the application.
@@ -45,7 +48,7 @@ public class PotnikOkno extends JFrame {
 	public PotnikOkno(GlavnoOkno go) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setTitle("Potnik");
-		setBounds(100, 100, 230, 150);
+		setBounds(100, 100, 371, 189);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -65,8 +68,8 @@ public class PotnikOkno extends JFrame {
 		
 		Baza baza = new Baza();
 		
-		JLabel lblIme = new JLabel("Ime:");
-		lblIme.setBounds(10, 11, 46, 14);
+		JLabel lblIme = new JLabel("Ime potnika:");
+		lblIme.setBounds(10, 11, 184, 14);
 		panel.add(lblIme);
 		
 		imeTextField = new JTextField();
@@ -75,22 +78,60 @@ public class PotnikOkno extends JFrame {
 		imeTextField.setColumns(10);
 		
 		JButton btnDodaj = new JButton("Dodaj");
-		btnDodaj.setBounds(10, 67, 89, 23);
+		btnDodaj.setBounds(224, 35, 89, 23);
 		panel.add(btnDodaj);
+		
+		JLabel lblSeznamPotnikov = new JLabel("Seznam potnikov:");
+		lblSeznamPotnikov.setBounds(10, 67, 184, 14);
+		panel.add(lblSeznamPotnikov);
+		
+		JComboBox potnikiComboBox = new JComboBox();
+		potnikiComboBox.setBounds(10, 96, 184, 20);
+		potnikiComboBox.setModel(new DefaultComboBoxModel<ItemPair>(baza.izberiPotnike()));
+		panel.add(potnikiComboBox);
+		
+		JButton btnOdstrani = new JButton("Odstrani");
+		btnOdstrani.setBounds(224, 95, 89, 23);
+		panel.add(btnOdstrani);
 		btnDodaj.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String ime = imeTextField.getText();
-				baza.dodajPotnika(ime);
-				/*if (result == 1)
+				if (ime.equals(""))
 				{
-					JOptionPane.showMessageDialog(null, "Ni dovolj zaloge paketov", "Napaka", JOptionPane.ERROR_MESSAGE);
-				}*/
+					JOptionPane.showMessageDialog(null, "Vnesite veljavno ime", "Napaka", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				baza.dodajPotnika(ime);
 				baza.zapri();
 				parent.napolniTabelo();
+				parent.setEnabled(true);
+				trenutnoOkno.dispose();
+				JOptionPane.showMessageDialog(null, "Potnik '" + ime + "' je bil uspešno dodan", "Dodaj", JOptionPane.INFORMATION_MESSAGE);
 			}			
-		});		
-		
+		});
+		btnOdstrani.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				int id = ((ItemPair)potnikiComboBox.getSelectedItem()).getKey();
+				String ime = ((ItemPair)potnikiComboBox.getSelectedItem()).getValue();
+				int result = baza.izbrisiPotnika(id);
+
+				baza.zapri();
+				parent.napolniTabelo();
+				parent.setEnabled(true);
+				trenutnoOkno.dispose();
+				if (result == Baza.RESULT_V_UPORABI)
+				{
+					JOptionPane.showMessageDialog(null, "Potnik '" + ime + "' je v uporabi", "Napaka", JOptionPane.ERROR_MESSAGE);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Potnik '" + ime + "' je bil uspešno izbrisan", "Odstrani", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}			
+		});
+		trenutnoOkno = this;
 		parent = go;
 	}
 }

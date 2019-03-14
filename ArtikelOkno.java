@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.AbstractListModel;
 import javax.swing.border.BevelBorder;
 import javax.swing.ListSelectionModel;
@@ -30,7 +31,8 @@ public class ArtikelOkno extends JFrame {
 
 	private JPanel contentPane;
 	private GlavnoOkno parent;
-
+	private ArtikelOkno trenutnoOkno;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -54,7 +56,7 @@ public class ArtikelOkno extends JFrame {
 	public ArtikelOkno(GlavnoOkno go) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setTitle("Artikel");
-		setBounds(100, 100, 230, 200);
+		setBounds(100, 100, 230, 230);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -102,20 +104,35 @@ public class ArtikelOkno extends JFrame {
 		panel.add(lblKolicina);
 		
 		JButton btnDodaj = new JButton("Dodaj");
-		btnDodaj.setBounds(10, 117, 89, 23);
+		btnDodaj.setBounds(10, 148, 89, 23);
 		panel.add(btnDodaj);
+		
+		JLabel lblZaBrisanjeVnesite = new JLabel("Za brisanje vnesite negativne vrednosti");
+		lblZaBrisanjeVnesite.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblZaBrisanjeVnesite.setBounds(10, 91, 184, 14);
+		panel.add(lblZaBrisanjeVnesite);
 		btnDodaj.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				int model = ((ItemPair)modelComboBox.getSelectedItem()).getKey();
 				int velikost = ((ItemPair)velikostComboBox.getSelectedItem()).getKey();
 				int kolicina = (int)kolicinaSpinner.getValue();
-				baza.dodajArtikel(model, velikost, kolicina);
-				baza.zapri();
-				parent.napolniTabelo();
+				int result = baza.dodajArtikel(model, velikost, kolicina);
+				if (result == Baza.RESULT_NI_ZALOGE)
+				{
+					JOptionPane.showMessageDialog(null, "Ni dovolj zaloge artiklov", "Napaka", JOptionPane.ERROR_MESSAGE);
+				}
+				else
+				{
+					baza.zapri();
+					parent.napolniTabelo();
+					parent.setEnabled(true);
+					trenutnoOkno.dispose();
+				}
+				//JOptionPane.showMessageDialog(null, "Model '" + ime + "' je bil uspešno dodan", "Dodaj", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-		
+		trenutnoOkno = this;
 		parent = go;
 	}
 	

@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ListSelectionModel;
 
 public class GlavnoOkno extends JFrame {
 
@@ -56,7 +57,8 @@ public class GlavnoOkno extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public GlavnoOkno() {
+	public GlavnoOkno() 
+	{
 		setTitle("Aplikacija");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 650, 581);
@@ -199,14 +201,20 @@ public class GlavnoOkno extends JFrame {
 		);
 		
 		artikliTable = new JTable();
-		artikliTable.setEnabled(false);
+		artikliTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		artikliTable.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
 				"Model", "Velikost", "Koli\u010Dina na zalogi"
 			}
-		));
+		) {
+		    public boolean isCellEditable(int row, int column) {
+			       //all cells false
+			       return false;
+			    }
+		}
+		);
 		artikliTable.getColumnModel().getColumn(2).setPreferredWidth(95);
 		scrollPane.setViewportView(artikliTable);
 		artikelPanel.setLayout(gl_artikelPanel);
@@ -255,18 +263,24 @@ public class GlavnoOkno extends JFrame {
 			new String[] {
 				"Model", "Velikost", "\u0160tevilo artiklov", "Koli\u010Dina"
 			}
-		));
+			
+		) {
+		    public boolean isCellEditable(int row, int column) {
+			       //all cells false
+			       return false;
+			    }
+		});
 		paketiTable.getColumnModel().getColumn(2).setPreferredWidth(84);
 		scrollPane_1.setViewportView(paketiTable);
 		paketPanel.setLayout(gl_paketPanel);
 		
-		JPanel potnikPanel = new JPanel();
-		tabbedPane.addTab("Potniki", null, potnikPanel, null);
+		JPanel tovorPanel = new JPanel();
+		tabbedPane.addTab("Tovor", null, tovorPanel, null);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
 		
-		JButton btnDodajPotnika = new JButton("Dodaj ...");
-		btnDodajPaket.addActionListener(new ActionListener() {
+		JButton btnDodajTovor = new JButton("Dodaj ...");
+		btnDodajTovor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					TovorOkno frame = new TovorOkno(glavnoOkno);
@@ -276,37 +290,74 @@ public class GlavnoOkno extends JFrame {
 				}	
 			}
 		});
-		GroupLayout gl_potnikPanel = new GroupLayout(potnikPanel);
-		gl_potnikPanel.setHorizontalGroup(
-			gl_potnikPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_potnikPanel.createSequentialGroup()
+		
+		JButton btnOddaj = new JButton("Oddaj");
+		btnOddaj.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				/*int potnik = ((ItemPair)tovorComboBox.getSelectedItem()).getKey();
+				int paket = ((ItemPair)paketComboBox.getSelectedItem()).getKey();
+				int kolicina = (int)kolicinaSpinner.getValue();*/
+				
+				int tovor_id = potnikiTable.getSelectedRow();
+				if (tovor_id == -1)
+				{
+					JOptionPane.showMessageDialog(null, "Izberite tovor", "Napaka", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				int potnik = Integer.parseInt(potnikiTable.getModel().getValueAt(tovor_id, 0).toString());
+				
+				System.out.println(potnik);
+				
+				Baza baza = new Baza();
+				int result = baza.dodajObstojecTovor(potnik, 0, 0);
+				if (result == Baza.RESULT_NI_ZALOGE)
+				{
+					JOptionPane.showMessageDialog(null, "Ni dovolj zaloge paketov", "Napaka", JOptionPane.ERROR_MESSAGE);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Raèun izdan", "Oddajanje", JOptionPane.INFORMATION_MESSAGE);
+					baza.zapri();
+					napolniTabelo();
+				}
+			}			
+		});
+		GroupLayout gl_tovorPanel = new GroupLayout(tovorPanel);
+		gl_tovorPanel.setHorizontalGroup(
+			gl_tovorPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_tovorPanel.createSequentialGroup()
 					.addGap(45)
 					.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 416, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
-					.addComponent(btnDodajPotnika, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(59, Short.MAX_VALUE))
+					.addGroup(gl_tovorPanel.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(btnOddaj, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(btnDodajTovor, GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
+					.addContainerGap(41, Short.MAX_VALUE))
 		);
-		gl_potnikPanel.setVerticalGroup(
-			gl_potnikPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_potnikPanel.createSequentialGroup()
+		gl_tovorPanel.setVerticalGroup(
+			gl_tovorPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_tovorPanel.createSequentialGroup()
 					.addGap(41)
-					.addGroup(gl_potnikPanel.createParallelGroup(Alignment.BASELINE)
+					.addGroup(gl_tovorPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 398, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnDodajPotnika))
-					.addContainerGap(44, Short.MAX_VALUE))
+						.addGroup(gl_tovorPanel.createSequentialGroup()
+							.addComponent(btnDodajTovor)
+							.addGap(19)
+							.addComponent(btnOddaj)))
+					.addContainerGap(29, Short.MAX_VALUE))
 		);
 		
 		potnikiTable = new JTable();
-		potnikiTable.setEnabled(false);
 		potnikiTable.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
-				"Potnik", "Paket", "Koli\u010Dina"
+				"\u0160ifra", "Potnik", "Paket", "Koli\u010Dina"
 			}
 		));
 		scrollPane_2.setViewportView(potnikiTable);
-		potnikPanel.setLayout(gl_potnikPanel);
+		tovorPanel.setLayout(gl_tovorPanel);
 		
 		File f = new File("nogavice.db");
 		if (f.exists())
@@ -322,6 +373,11 @@ public class GlavnoOkno extends JFrame {
 				JOptionPane.showMessageDialog(null, "Baza je že ustvarjena", "Napaka", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+		
+		artikliTable.setAutoCreateRowSorter(true);
+		paketiTable.setAutoCreateRowSorter(true);
+		potnikiTable.setAutoCreateRowSorter(true);
+		//artikliTable.setModel(nonEditableModel);
 	}
 	
 	public void napolniTabelo()
