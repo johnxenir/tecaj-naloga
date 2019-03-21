@@ -78,11 +78,11 @@ public class GlavnoOkno extends JFrame {
 			}			
 		});
 		
-		JMenu mnDodaj = new JMenu("Dodaj");
-		menuBar.add(mnDodaj);
+		JMenu mnUredi = new JMenu("Uredi");
+		menuBar.add(mnUredi);
 		
 		JMenuItem mntmArtikel = new JMenuItem("Artikel");
-		mnDodaj.add(mntmArtikel);
+		mnUredi.add(mntmArtikel);
 		mntmArtikel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -97,7 +97,7 @@ public class GlavnoOkno extends JFrame {
 		});
 		
 		JMenuItem mntmPaket = new JMenuItem("Paket");
-		mnDodaj.add(mntmPaket);
+		mnUredi.add(mntmPaket);
 		mntmPaket.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -112,7 +112,7 @@ public class GlavnoOkno extends JFrame {
 		});
 		
 		JMenuItem mntmTovor = new JMenuItem("Tovor");
-		mnDodaj.add(mntmTovor);
+		mnUredi.add(mntmTovor);
 		mntmTovor.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -127,7 +127,7 @@ public class GlavnoOkno extends JFrame {
 		});
 		
 		JMenuItem mntmModel = new JMenuItem("Model");
-		mnDodaj.add(mntmModel);
+		mnUredi.add(mntmModel);
 		mntmModel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -142,7 +142,7 @@ public class GlavnoOkno extends JFrame {
 		});		
 		
 		JMenuItem mntmPotnik = new JMenuItem("Potnik");
-		mnDodaj.add(mntmPotnik);
+		mnUredi.add(mntmPotnik);
 		mntmPotnik.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

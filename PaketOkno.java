@@ -114,6 +114,11 @@ public class PaketOkno extends JFrame {
 				int velikost = ((ItemPair)velikostComboBox.getSelectedItem()).getKey();
 				int stevilo = (int)steviloSpinner.getValue();
 				int kolicina = (int)kolicinaSpinner.getValue();
+				if (stevilo <= 0 || kolicina <= 0)
+				{
+					JOptionPane.showMessageDialog(null, "Vnesite pozitivno število za št. artiklov v paketu in kolièini", "Napaka", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				int result = baza.dodajPaket(model, velikost, stevilo, kolicina);
 				if (result == Baza.RESULT_NI_ZALOGE)
 				{

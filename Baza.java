@@ -176,13 +176,18 @@ public class Baza
 				int id = rezultat.getInt("id_nogavice");
 				if (k + kolicina < 0)
 				{
-					System.out.print("ni dovolj zaloge");
+					System.out.println("ni dovolj zaloge");
 					return RESULT_NI_ZALOGE;
 				}
 				dodajObstojecArtikel(id, k, kolicina);
 			}
 			else
 			{
+				if (kolicina < 0)
+				{
+					System.out.println("ni dovolj zaloge");
+					return RESULT_NI_ZALOGE;
+				}					
 				dodajNovArtikel(model, velikost, kolicina);
 			}
 			
@@ -266,13 +271,22 @@ public class Baza
 				{
 					int k1 = rezultat1.getInt("kolicina");
 					int id1 = rezultat1.getInt("id_tovor");
+					if ( k1 + kolicina < 0)
+					{
+						System.out.println("ni dovolj zaloge");
+						return RESULT_NI_ZALOGE;
+					}
 					dodajObstojecTovor(id1, k1, kolicina);
 				}
 				else
 				{
+					if (kolicina < 0)
+					{
+						System.out.println("ni dovolj zaloge");
+						return RESULT_NI_ZALOGE;
+					}
 					dodajNovTovor(potnik, id, kolicina);					
 				}
-				
 				dodajObstojecPaket(id, k, - kolicina);
 			}
 			else
